@@ -2,13 +2,16 @@ import "dotenv/config";
 import app from "./app.js";
 import { sequelize } from "./database/db.js";
 
+import "./models/User.js";
+
 const { PORT } = process.env;
 
 const main = async () => {
    try {
-      //Intenta autentificar con la DB
+      /*  //Intenta autentificar con la DB
       await sequelize.authenticate();
-      console.log("Connection has been established successfully.");
+      console.log("Connection has been established successfully."); */
+      await sequelize.sync();
 
       //inicializa el servidor Express
       app.listen(PORT);
