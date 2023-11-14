@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database/db.js";
+import Task from "./Task.js";
 
 //Se crea la tabla con sus columnas
 const Priority = sequelize.define(
@@ -21,5 +22,15 @@ const Priority = sequelize.define(
       timestamps: false,
    }
 );
+
+//se crea la relacion de uno a muchos
+Priority.hasMany(Task, {
+   //se define el nombre de la columna que lleva la relacion
+   foreignKey: "priorityId",
+   //se identifica la relacion con la id del usuario
+   sourceKey: "id",
+});
+
+Task.belongsTo(Priority);
 
 export default Priority;

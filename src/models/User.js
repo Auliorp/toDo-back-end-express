@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database/db.js";
 import bcrypt from "bcrypt";
+import Task from "./Task.js";
 
 //Se crea la tabla con sus columnas
 const User = sequelize.define(
@@ -44,5 +45,15 @@ const User = sequelize.define(
       timestamps: true,
    }
 );
+
+//se crea la relacion de uno a muchos
+User.hasMany(Task, {
+   //se define el nombre de la columna que lleva la relacion
+   foreignKey: "userId",
+   //se identifica la relacion con la id del usuario
+   sourceKey: "id",
+});
+
+Task.belongsTo(User);
 
 export default User;
