@@ -1,10 +1,17 @@
 import { Router } from "express";
+import {
+   getPrioritiesControllers,
+   deletePriorityControllers,
+   getPriorityIDControllers,
+   postPriorityControllers,
+   putPriorityControllers,
+} from "../controllers/priority.controllers.js";
 const priorityRoutes = Router();
 
-priorityRoutes.get("/priorities");
-priorityRoutes.post("/priority");
-priorityRoutes.put("/priority/:id");
-priorityRoutes.delete("/priority/:id");
-priorityRoutes.get("/priority/:id");
+priorityRoutes.get("/priorities", getPrioritiesControllers);
+priorityRoutes.post("/priority", postPriorityControllers);
+priorityRoutes.put("/priority/:id", putPriorityControllers);
+priorityRoutes.delete("/priority/:id", deletePriorityControllers);
+priorityRoutes.get("/priority/:id", getPriorityIDControllers);
 
 export default priorityRoutes;
