@@ -8,8 +8,8 @@ const Priority = sequelize.define(
    {
       id: {
          type: DataTypes.INTEGER,
-         autoIncrement: true,
          primaryKey: true,
+         autoIncrement: true,
       },
       title: {
          type: DataTypes.STRING,
