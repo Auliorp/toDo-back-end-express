@@ -1,4 +1,5 @@
 import Priority from "../models/Priority.js";
+import Task from "../models/Task.js";
 
 export const getPrioritiesControllers = async (req, res) => {
    try {
@@ -35,7 +36,7 @@ export const postPriorityControllers = async (req, res) => {
          title,
       });
       return res.status(201).json({
-         message: "Título creado exitosamente",
+         message: "Prioridad creada exitosamente",
          priority: newPriority,
       });
    } catch (error) {
@@ -124,6 +125,39 @@ export const getPriorityIDControllers = async (req, res) => {
          });
       }
       return res.status(200).json(priorityId);
+   } catch (error) {
+      return res.status(500).json({ message: error.message });
+   }
+};
+//filtro por Tareas relacionadas a Prioridades
+export const getPriorityTaskControllers = async (req, res) => {
+   try {
+      const { id } = req.params;
+
+      if (isNaN(id)) {
+         return res
+            .status(404)
+            .json({ message: "el Id ingresado solo debe contener numeros" });
+      }
+
+      const priorityExists = await Priority.findByPk(id);
+
+      if (!priorityExists) {
+         return res.status(404).json({
+            message: "El Id ingresado no ha sido creado aún",
+         });
+      }
+
+      const tasks = await Task.findAll({
+         where: { priorityId: id },
+      });
+
+      if (tasks.length === 0) {
+         return res.status(400).json({
+            message: "El id ingresado no a sido asignado a una tarea",
+         });
+      }
+      res.status(200).json(tasks);
    } catch (error) {
       return res.status(500).json({ message: error.message });
    }

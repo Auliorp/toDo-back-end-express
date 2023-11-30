@@ -27,7 +27,7 @@ const Task = sequelize.define(
       },
    },
    {
-      //agrega dos filas nuevas automaticamente (createdAt, upadatedAt) siempre i cuando este en true.
+      //agrega dos filas nuevas automaticamente (createdAt, upadatedAt) siempre y cuando este en true.
       timestamps: true,
    }
 );
