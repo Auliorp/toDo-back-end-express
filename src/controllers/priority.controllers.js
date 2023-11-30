@@ -77,7 +77,7 @@ export const putPriorityControllers = async (req, res) => {
       //Se guardan los cambios editados con save()
       await priority.save();
 
-      res.json(priority);
+      return res.json(priority);
    } catch (error) {
       res.status(500).json({ message: error.message });
    }
@@ -88,6 +88,11 @@ export const deletePriorityControllers = async (req, res) => {
       //Extraemos el id de la busqueda.
       const { id } = req.params;
 
+      if (isNaN(id)) {
+         return res.status(400).json({
+            message: "El id ingresado no es valido, solo se permiten numeros",
+         });
+      }
       //findById() se utiliza para verificar si la podipiedad existe antes de eliminarla en la DB
       const existingPriority = await Priority.findByPk(id);
 
