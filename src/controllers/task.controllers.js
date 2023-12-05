@@ -60,7 +60,6 @@ export const putTaskControllers = async (req, res) => {
       }
 
       if (existingTask && existingTask.id != id) {
-         console.log("titulo duplicado");
          return res.status(400).json({
             message:
                "El título que intentas asignar ya existe, por favor intente con uno diferente",

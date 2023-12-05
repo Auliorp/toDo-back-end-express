@@ -8,10 +8,11 @@ const User = sequelize.define(
    "users",
    {
       id: {
-         type: DataTypes.UUID,
+         type: DataTypes.INTEGER,
+         autoIncrement: true,
          primaryKey: true,
       },
-      nickname: {
+      nickName: {
          type: DataTypes.STRING,
          unique: true,
          allowNull: false,
@@ -21,7 +22,7 @@ const User = sequelize.define(
          unique: false,
          allowNull: false,
       },
-      lastname: {
+      lastName: {
          type: DataTypes.STRING,
          unique: false,
          allowNull: false,
