@@ -47,7 +47,7 @@ export const postUserControllers = async (req, res) => {
    }
 };
 
-export const putUserControllers = (req, res) => {
+export const patchUserControllers = (req, res) => {
    res.send("Usuario editado");
 };
 

@@ -16,8 +16,12 @@ export const getTasksControllers = async (req, res) => {
 
 export const postTaskControllers = async (req, res) => {
    try {
-      const { title, description, priorityId } = req.body;
-
+      const { title, description, priorityId, userId } = req.body;
+      if (!title.trim() || !description.trim()) {
+         return res.status(400).json({
+            message: "Los campos 'title' y 'description' son obligatorios.",
+         });
+      }
       const existingTask = await Task.findOne({
          where: {
             title,
@@ -33,6 +37,7 @@ export const postTaskControllers = async (req, res) => {
          title,
          description,
          priorityId,
+         userId,
       });
 
       return res
@@ -46,7 +51,7 @@ export const postTaskControllers = async (req, res) => {
 export const putTaskControllers = async (req, res) => {
    try {
       const { id } = req.params;
-      const { title, description, priorityId } = req.body;
+      const { title, description, priorityId, userId } = req.body;
 
       const existingTask = await Task.findOne({
          where: {
@@ -76,6 +81,7 @@ export const putTaskControllers = async (req, res) => {
       task.title = title;
       task.description = description;
       task.priorityId = priorityId;
+      task.userId = userId;
 
       await task.save();
       return res
