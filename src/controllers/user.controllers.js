@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Task from "../models/Task.js";
+import { Op } from "sequelize";
 
 export const getUsersControllers = async (req, res) => {
    try {
@@ -47,12 +48,79 @@ export const postUserControllers = async (req, res) => {
    }
 };
 
-export const patchUserControllers = (req, res) => {
-   res.send("Usuario editado");
+export const patchUserControllers = async (req, res) => {
+   try {
+      const { id } = req.params;
+      const { nickName, name, lastName, email, password } = req.body;
+
+      if (isNaN(id)) {
+         return res
+            .status(400)
+            .json({ message: "El Id ingresado solo debe contener numeros" });
+      }
+
+      const user = await User.findByPk(id);
+      if (!user) {
+         return res
+            .status(404)
+            .json({ message: "El usuario que intenta editar no existe" });
+      }
+      if (nickName !== undefined) {
+         const existingUserWithNickName = await User.findOne({
+            where: {
+               nickName,
+               id: { [Op.not]: id },
+            },
+         });
+         if (existingUserWithNickName) {
+            return res.status(400).json({
+               message:
+                  "El apodo que intentas asignar ya existe, por favor intente con uno diferente ",
+            });
+         }
+         user.nickName = nickName;
+      }
+      if (name !== undefined) {
+         user.name = name;
+      }
+      if (lastName !== undefined) {
+         user.lastName = lastName;
+      }
+      if (email !== undefined) {
+         user.email = email;
+      }
+      if (password !== undefined) {
+         user.password = password;
+      }
+      await user.save();
+      return res
+         .status(200)
+         .json({ message: "Usuario editado correctamente", user });
+   } catch (error) {
+      return res.status(500).json({ message: error.message });
+   }
 };
 
-export const deleteUserControllers = (req, res) => {
-   res.send("Usuario eliminado");
+export const deleteUserControllers = async (req, res) => {
+   try {
+      const { id } = req.params;
+      if (isNaN(id)) {
+         return res.status(400).json({
+            message: "El id ingresado no es valido, solo se permiten numeros",
+         });
+      }
+      const existingUser = await User.findByPk(id);
+
+      if (!existingUser) {
+         return res.status(404).json({ message: "El Id ingresado no existe" });
+      }
+      await User.destroy({
+         where: { id },
+      });
+      return res.status(200).json({ message: "Usuario eliminado con exito" });
+   } catch (error) {
+      return res.status(500).json({ message: error.message });
+   }
 };
 
 export const getUserIDControllers = async (req, res) => {
