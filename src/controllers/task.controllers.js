@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import Task from "../models/Task.js";
 
 export const getTasksControllers = async (req, res) => {
@@ -5,7 +6,7 @@ export const getTasksControllers = async (req, res) => {
       const tasks = await Task.findAll();
 
       if (tasks.length === 0) {
-         return res.status(404).json({ message: "No hay tareas cradas" });
+         return res.status(404).json({ message: "No hay tareas creadas" });
       }
 
       return res.json(tasks);
@@ -48,27 +49,15 @@ export const postTaskControllers = async (req, res) => {
    }
 };
 
-export const putTaskControllers = async (req, res) => {
+export const patchTaskControllers = async (req, res) => {
    try {
       const { id } = req.params;
-      const { title, description, priorityId, userId } = req.body;
+      const { title, description, priorityId, done } = req.body;
 
-      const existingTask = await Task.findOne({
-         where: {
-            title,
-         },
-      });
       if (isNaN(id)) {
          return res
             .status(400)
             .json({ message: "el Id ingresado solo debe contener numeros" });
-      }
-
-      if (existingTask && existingTask.id != id) {
-         return res.status(400).json({
-            message:
-               "El título que intentas asignar ya existe, por favor intente con uno diferente",
-         });
       }
 
       const task = await Task.findByPk(id);
@@ -78,11 +67,34 @@ export const putTaskControllers = async (req, res) => {
             .json({ message: "La tarea que intenta editar no existe" });
       }
 
-      task.title = title;
-      task.description = description;
-      task.priorityId = priorityId;
-      task.userId = userId;
+      if (title !== undefined) {
+         const existingTaskWithTitle = await Task.findOne({
+            where: {
+               title,
+               //{ [Op.not]: id } se traduce como "donde el valor no sea igual al valor del id"
+               id: { [Op.not]: id },
+            },
+         });
 
+         if (existingTaskWithTitle) {
+            return res.status(400).json({
+               message:
+                  "El título que intentas asignar ya existe, por favor intente con uno diferente",
+            });
+         }
+
+         // Actualiza solo si title está presente en la solicitud
+         task.title = title;
+      }
+      if (description !== undefined) {
+         task.description = description;
+      }
+      if (priorityId !== undefined) {
+         task.priorityId = priorityId;
+      }
+      if (done !== undefined) {
+         task.done = done;
+      }
       await task.save();
       return res
          .status(200)

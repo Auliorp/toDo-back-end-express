@@ -4,13 +4,13 @@ import {
    getTaskIDControllers,
    getTasksControllers,
    postTaskControllers,
-   putTaskControllers,
+   patchTaskControllers,
 } from "../controllers/task.controllers.js";
 const taskRoutes = Router();
 
 taskRoutes.get("/tasks", getTasksControllers);
 taskRoutes.post("/task", postTaskControllers);
-taskRoutes.put("/task/:id", putTaskControllers);
+taskRoutes.patch("/task/:id", patchTaskControllers);
 taskRoutes.delete("/task/:id", deleteTaskControllers);
 taskRoutes.get("/task/:id", getTaskIDControllers);
 

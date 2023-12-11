@@ -7,7 +7,7 @@ export const getPrioritiesControllers = async (req, res) => {
       const priorities = await Priority.findAll();
 
       if (priorities.length === 0) {
-         return res.status(404).json({ message: "No hay Prioridades Creadas" });
+         return res.status(404).json({ message: "No hay Prioridades creadas" });
       }
       //caso contrario esta linea de codigo envia la respuesta al cliente
       return res.json(priorities);
@@ -21,12 +21,12 @@ export const postPriorityControllers = async (req, res) => {
       //Esta linea de codigo seleccinas las columnas que va a utilizar para crear una nueva prioridad.
       const { title } = req.body;
 
-      const existingPriority = await Priority.findOne({
+      const existingTitle = await Priority.findOne({
          where: {
             title,
          },
       });
-      if (existingPriority) {
+      if (existingTitle) {
          return res.status(400).json({
             message:
                "El título que defines ya se encuentra creado, por favor ingrese otro titulo",
@@ -59,6 +59,12 @@ export const putPriorityControllers = async (req, res) => {
             .status(400)
             .json({ message: "el Id ingresado solo debe contener numeros" });
       }
+      const priority = await Priority.findByPk(id);
+      if (!priority) {
+         return res
+            .status(404)
+            .json({ message: "La prioridad que intentas editar no existe" });
+      }
       //Si existe un título igual y no pertenece a la misma priority que estamos editando, devuelve un error
       if (existingPriority && existingPriority.id != id) {
          return res.status(400).json({
@@ -66,12 +72,7 @@ export const putPriorityControllers = async (req, res) => {
                "El título que intentas asignar ya existe, por favor intente con uno diferente",
          });
       }
-      const priority = await Priority.findByPk(id);
-      if (!priority) {
-         return res
-            .status(404)
-            .json({ message: "La prioridad que intentas editar no existe" });
-      }
+
       //se define la seccion que se modificara en este caso es title.
       priority.title = title;
       //Se guardan los cambios editados con save()
@@ -98,8 +99,7 @@ export const deletePriorityControllers = async (req, res) => {
 
       if (!existingPriority) {
          return res.status(404).json({
-            message:
-               "El Id ingresado no existe o esta ingresando un valor no numerico",
+            message: "El Id ingresado no existe",
          });
       }
       //la propiedad destroy se utiliza para elimiar registros de la DB
@@ -149,7 +149,7 @@ export const getPriorityTaskControllers = async (req, res) => {
 
       if (!priorityExists) {
          return res.status(404).json({
-            message: "El Id ingresado no ha sido creado aún",
+            message: "El id ingresado no ha sido creado aún",
          });
       }
 
