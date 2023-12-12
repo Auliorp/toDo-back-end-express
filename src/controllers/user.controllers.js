@@ -142,6 +142,34 @@ export const getUserIDControllers = async (req, res) => {
    }
 };
 
-export const getUserTaskControllers = (req, res) => {
-   res.send("entro");
+export const getUserIdTaskControllers = async (req, res) => {
+   try {
+      const { id } = req.params;
+
+      if (isNaN(id)) {
+         return res
+            .status(400)
+            .json({ message: "El Id ingresado solo debe contener numeros" });
+      }
+
+      const userExists = await User.findByPk(id);
+
+      if (!userExists) {
+         return res.status(404).json({ message: "Id ingresado no existe" });
+      }
+
+      const tasks = await Task.findAll({
+         where: {
+            userId: id,
+         },
+      });
+      if (tasks.length === 0) {
+         return res.status(400).json({
+            message: "El id ingresado no a sido asignado a una tarea",
+         });
+      }
+      return res.status(200).json(tasks);
+   } catch (error) {
+      return res.status(500).json({ message: error.message });
+   }
 };

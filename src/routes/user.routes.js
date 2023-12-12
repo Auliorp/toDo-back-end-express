@@ -5,7 +5,7 @@ import {
    getUsersControllers,
    postUserControllers,
    patchUserControllers,
-   getUserTaskControllers,
+   getUserIdTaskControllers,
 } from "../controllers/user.controllers.js";
 const userRoutes = Router();
 
@@ -14,6 +14,6 @@ userRoutes.post("/user", postUserControllers);
 userRoutes.patch("/user/:id", patchUserControllers);
 userRoutes.delete("/user/:id", deleteUserControllers);
 userRoutes.get("/user/:id", getUserIDControllers);
-userRoutes.get("/user/:id/tasks", getUserTaskControllers);
+userRoutes.get("/user/:id/tasks", getUserIdTaskControllers);
 
 export default userRoutes;
